@@ -30,4 +30,6 @@ public interface ResourceService {
      * 分页查询资源
      */
     Page<Resource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum);
+
+    List<Resource> list();
 }

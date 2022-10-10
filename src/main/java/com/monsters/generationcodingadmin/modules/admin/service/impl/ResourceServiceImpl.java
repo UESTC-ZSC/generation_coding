@@ -37,4 +37,10 @@ public class ResourceServiceImpl implements ResourceService {
         //TODO
         return null;
     }
+
+    @Override
+    public List<Resource> list() {
+        //TODO
+        return null;
+    }
 }
