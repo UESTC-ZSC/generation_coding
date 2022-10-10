@@ -5,6 +5,7 @@ import com.monsters.generationcodingadmin.modules.admin.service.ResourceService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +42,13 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public List<Resource> list() {
         //TODO
-        return null;
+        Resource resource = new Resource();
+        resource.setName("菜单");
+        resource.setUrl("/menu");
+        resource.setDescription("菜单");
+        resource.setCategoryId(1L);
+        List<Resource> list = new ArrayList<>();
+        list.add(resource);
+        return list;
     }
 }

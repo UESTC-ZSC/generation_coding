@@ -6,6 +6,7 @@ import com.monsters.generationcodingadmin.modules.admin.entity.Role;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.AdminRegisterDTO;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.UpdateAdminPasswordDTO;
 import com.monsters.generationcodingadmin.modules.admin.repository.AdminInfoRepository;
+import com.monsters.generationcodingadmin.modules.admin.service.AdminCacheService;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminService;
 import com.monsters.generationcodingadmin.security.util.JwtTokenUtil;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -115,5 +116,10 @@ public class AdminServiceImpl implements AdminService {
     public Admin getById(Long adminId) {
         Admin admin =  adminInfoRepository.getReferenceById(adminId);
         return admin;
+    }
+
+    @Override
+    public AdminCacheService getCacheService() {
+        return null;
     }
 }
