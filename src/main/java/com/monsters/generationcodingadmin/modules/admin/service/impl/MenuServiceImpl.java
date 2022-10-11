@@ -5,9 +5,8 @@ import com.monsters.generationcodingadmin.modules.admin.entity.Menu;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.MenuNode;
 import com.monsters.generationcodingadmin.modules.admin.repository.MenuInfoRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.MenuService;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +15,8 @@ import java.util.List;
  * @author Monsters
  * @date 2022/10/10 5:47 PM
  */
-@Service
-public class MenuServiceImplImpl extends BaseServiceImpl<Menu, MenuInfoRepository> implements MenuService{
 
+public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> implements MenuService {
 
     @Override
     public boolean create(Menu menu) {

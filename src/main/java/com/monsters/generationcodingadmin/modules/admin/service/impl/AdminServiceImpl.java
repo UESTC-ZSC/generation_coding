@@ -31,12 +31,6 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AdminInfoRepository adminInfoRepository;
-
-    @Autowired
-    private JPAQueryFactory factory;
-
 
     @Override
     public Admin getAdminByUsername(String name) {
@@ -114,8 +108,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin getById(Long adminId) {
-        Admin admin =  adminInfoRepository.getReferenceById(adminId);
-        return admin;
+        return null;
     }
 
     @Override

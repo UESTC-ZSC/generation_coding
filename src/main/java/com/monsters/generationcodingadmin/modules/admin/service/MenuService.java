@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.modules.admin.service;
 
+import com.monsters.generationcodingadmin.common.service.BaseService;
 import com.monsters.generationcodingadmin.modules.admin.entity.Menu;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.MenuNode;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ import java.util.List;
  * @author Monsters
  * @date 2022/10/10 5:47 PM
  */
-public interface MenuService {
+public interface MenuService extends BaseService<Menu> {
 
     /**
      * 创建后台菜单
