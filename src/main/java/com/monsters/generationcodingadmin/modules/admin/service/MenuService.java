@@ -17,12 +17,12 @@ public interface MenuService extends BaseService<Menu> {
     /**
      * 创建后台菜单
      */
-    boolean create(Menu menu);
+    Menu create(Menu menu);
 
     /**
      * 修改后台菜单
      */
-    boolean update(Long id, Menu menu);
+    Menu update(Menu menu);
 
     /**
      * 分页查询后台菜单

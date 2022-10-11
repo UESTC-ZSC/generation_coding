@@ -32,4 +32,9 @@ public interface BaseService<T> {
      * 插入实体
      */
     T insert(T entity);
+
+    /**
+     * 更新实体
+     */
+    T update(T entity);
 }

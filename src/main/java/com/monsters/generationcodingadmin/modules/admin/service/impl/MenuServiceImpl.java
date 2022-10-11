@@ -19,15 +19,16 @@ import java.util.List;
 public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> implements MenuService {
 
     @Override
-    public boolean create(Menu menu) {
-        //TODO
-        return false;
+    public Menu create(Menu menu) {
+        updateLevel(menu);
+        return this.insert(menu);
     }
 
+
     @Override
-    public boolean update(Long id, Menu menu) {
-        //TODO
-        return false;
+    public Menu update(Menu entity) {
+        updateLevel(entity);
+        return super.update(entity);
     }
 
     @Override
@@ -46,5 +47,23 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> i
     public boolean updateHidden(Long id, Integer hidden) {
         //TODO
         return false;
+    }
+
+    /**
+     * 修改菜单层级
+     */
+    private void updateLevel(Menu menu) {
+        if (menu.getParentId() == 0) {
+            // 一级菜单
+            menu.setLevel(0);
+        } else {
+            //有父菜单时选择根据父菜单level设置
+            Menu parentMenu = getById(menu.getParentId());
+            if (parentMenu != null) {
+                menu.setLevel(parentMenu.getLevel() + 1);
+            } else {
+                menu.setLevel(0);
+            }
+        }
     }
 }

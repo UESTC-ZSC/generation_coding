@@ -2,12 +2,12 @@ package com.monsters.generationcodingadmin.common.service.impl;
 
 import com.monsters.generationcodingadmin.common.service.BaseService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.util.Assert;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import java.util.List;
 
@@ -19,7 +19,8 @@ import java.util.List;
  */
 public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements BaseService<T> {
 
-    @Autowired
+    @Autowired(required = false)
+    @Getter
     protected K repository;
 
     @Autowired
@@ -27,11 +28,6 @@ public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements Bas
 
     @Autowired
     protected EntityManager em;
-
-//
-//    @Autowired
-//    private JpaEntityInformation<T, ?> entityInformation;
-
 
     @Override
     public List findAll() {
@@ -49,17 +45,13 @@ public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements Bas
     }
 
     @Override
-    public T insert(Object entity) {
+    public T update(T entity) {
+        return this.repository.save(entity);
+    }
 
-//        Assert.notNull(entity, "Entity must not be null.");
-//
-//        if (entityInformation.isNew((T) entity)) {
-//            em.persist(entity);
-//            return (T) entity;
-//        } else {
-//            return em.merge((T) entity);
-//        }
-        return null;
+    @Override
+    public T insert(T entity) {
+        return this.repository.save(entity);
     }
 
 
