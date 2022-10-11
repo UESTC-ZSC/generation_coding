@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author Monsters
  * @date 2022/10/9 10:36 PM
  */
-
+@Repository
 public interface AdminInfoRepository extends JpaRepository<Admin, Long>, QuerydslPredicateExecutor<Admin> {
 }

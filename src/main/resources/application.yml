@@ -37,6 +37,7 @@ redis:
 secure:
   ignored:
     urls: #安全路径白名单
+      - /api/**
       - /swagger-ui/
       - /swagger-resources/**
       - /**/v2/api-docs
@@ -51,3 +52,4 @@ secure:
       - /admin/register
       - /admin/info
       - /admin/logout
+

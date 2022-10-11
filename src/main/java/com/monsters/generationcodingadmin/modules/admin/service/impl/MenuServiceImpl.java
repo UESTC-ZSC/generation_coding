@@ -15,7 +15,7 @@ import java.util.List;
  * @author Monsters
  * @date 2022/10/10 5:47 PM
  */
-
+@Service
 public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> implements MenuService {
 
     @Override

@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements BaseService<T> {
 
-    @Resource
+    @Autowired
     protected K repository;
 
     @Autowired
@@ -28,9 +28,9 @@ public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements Bas
     @Autowired
     protected EntityManager em;
 
-
-    @Autowired
-    private JpaEntityInformation<T, ?> entityInformation;
+//
+//    @Autowired
+//    private JpaEntityInformation<T, ?> entityInformation;
 
 
     @Override
@@ -51,14 +51,15 @@ public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements Bas
     @Override
     public T insert(Object entity) {
 
-        Assert.notNull(entity, "Entity must not be null.");
-
-        if (entityInformation.isNew((T) entity)) {
-            em.persist(entity);
-            return (T) entity;
-        } else {
-            return em.merge((T) entity);
-        }
+//        Assert.notNull(entity, "Entity must not be null.");
+//
+//        if (entityInformation.isNew((T) entity)) {
+//            em.persist(entity);
+//            return (T) entity;
+//        } else {
+//            return em.merge((T) entity);
+//        }
+        return null;
     }
 
 
