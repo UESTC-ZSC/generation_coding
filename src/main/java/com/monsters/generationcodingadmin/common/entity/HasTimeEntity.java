@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -25,10 +26,12 @@ public class HasTimeEntity extends BaseEntity{
     // 创建时间
     @Column(nullable = false)
     @CreatedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     // 修改时间
     @Column(nullable = false)
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 }

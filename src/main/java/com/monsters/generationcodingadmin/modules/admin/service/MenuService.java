@@ -2,7 +2,8 @@ package com.monsters.generationcodingadmin.modules.admin.service;
 
 import com.monsters.generationcodingadmin.common.service.BaseService;
 import com.monsters.generationcodingadmin.modules.admin.entity.Menu;
-import com.monsters.generationcodingadmin.modules.admin.model.dto.MenuNode;
+import com.monsters.generationcodingadmin.modules.admin.model.dto.menu.MenuNode;
+import com.monsters.generationcodingadmin.modules.admin.model.dto.menu.MenuPageDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface MenuService extends BaseService<Menu> {
     /**
      * 分页查询后台菜单
      */
-    Page<Menu> list(Long parentId, Integer pageSize, Integer pageNum);
+    Page<Menu> list(MenuPageDTO menuPageDTO);
 
     /**
      * 树形结构返回所有菜单列表
@@ -37,5 +38,5 @@ public interface MenuService extends BaseService<Menu> {
     /**
      * 修改菜单显示状态
      */
-    boolean updateHidden(Long id, Integer hidden);
+    long updateHidden(Long id, Integer hidden);
 }

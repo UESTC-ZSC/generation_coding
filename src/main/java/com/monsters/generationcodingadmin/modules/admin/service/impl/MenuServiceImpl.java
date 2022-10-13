@@ -2,14 +2,24 @@ package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
 import com.monsters.generationcodingadmin.common.service.impl.BaseServiceImpl;
 import com.monsters.generationcodingadmin.modules.admin.entity.Menu;
-import com.monsters.generationcodingadmin.modules.admin.model.dto.MenuNode;
+import com.monsters.generationcodingadmin.modules.admin.entity.QMenu;
+import com.monsters.generationcodingadmin.modules.admin.model.dto.menu.MenuNode;
+import com.monsters.generationcodingadmin.modules.admin.model.dto.menu.MenuPageDTO;
 import com.monsters.generationcodingadmin.modules.admin.repository.MenuInfoRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.MenuService;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.repository.support.JpaEntityInformation;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Monsters
@@ -17,6 +27,10 @@ import java.util.List;
  */
 @Service
 public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> implements MenuService {
+
+
+    private QMenu qMenu = QMenu.menu;
+
 
     @Override
     public Menu create(Menu menu) {
@@ -32,21 +46,41 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> i
     }
 
     @Override
-    public Page<Menu> list(Long parentId, Integer pageSize, Integer pageNum) {
-        //TODO
-        return null;
+    public Page<Menu> list(MenuPageDTO pageDTO) {
+
+//        Predicate predicate = null;
+//        if(pageDTO.getParentId() != null){
+//            predicate = qMenu.parentId.eq(pageDTO.getParentId());
+//
+//        return this.repository.findAll(predicate, request);
+
+        PageRequest request = PageRequest.of(pageDTO.getPageNum() - 1, pageDTO.getPageSize());
+        BooleanBuilder builder = new BooleanBuilder();
+        JPAQuery<Menu> jpaQuery = queryFactory.select(qMenu).from(qMenu);
+        QueryResults<Menu> queryResults = jpaQuery.where(builder)
+                .orderBy(qMenu.sort.desc())
+                .offset(request.getOffset())
+                .limit(request.getPageSize())
+                .fetchResults();
+        return new PageImpl<>(queryResults.getResults(), request, queryResults.getTotal());
     }
 
     @Override
     public List<MenuNode> treeList() {
-        //TODO
-        return null;
+        List<Menu> menuList = this.findAll();
+        List<MenuNode> result = menuList.stream()
+                .filter(menu -> menu.getParentId().equals(0L))
+                .map(menu -> covertMenuNode(menu, menuList))
+                .collect(Collectors.toList());
+        return result;
     }
 
     @Override
-    public boolean updateHidden(Long id, Integer hidden) {
-        //TODO
-        return false;
+    public long updateHidden(Long id, Integer hidden) {
+        return this.queryFactory.update(qMenu)
+                .where(qMenu.id.eq(id))
+                .set(qMenu.hidden, hidden)
+                .execute();
     }
 
     /**
@@ -66,4 +100,18 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> i
             }
         }
     }
+
+    /**
+     * 将UmsMenu转化为UmsMenuNode并设置children属性
+     */
+    private MenuNode covertMenuNode(Menu menu, List<Menu> menuList) {
+        MenuNode node = new MenuNode();
+        BeanUtils.copyProperties(menu, node);
+        List<MenuNode> children = menuList.stream()
+                .filter(subMenu -> subMenu.getParentId().equals(menu.getId()))
+                .map(subMenu -> covertMenuNode(subMenu, menuList)).collect(Collectors.toList());
+        node.setChildren(children);
+        return node;
+    }
+
 }

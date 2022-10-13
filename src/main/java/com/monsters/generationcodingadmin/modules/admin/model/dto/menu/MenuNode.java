@@ -1,4 +1,4 @@
-package com.monsters.generationcodingadmin.modules.admin.model.dto;
+package com.monsters.generationcodingadmin.modules.admin.model.dto.menu;
 
 import com.monsters.generationcodingadmin.modules.admin.entity.Menu;
 import io.swagger.annotations.ApiModelProperty;
