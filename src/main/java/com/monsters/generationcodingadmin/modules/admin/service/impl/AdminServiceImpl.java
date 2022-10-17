@@ -1,14 +1,16 @@
 package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
-import com.monsters.generationcodingadmin.modules.admin.entity.Admin;
-import com.monsters.generationcodingadmin.modules.admin.entity.Resource;
-import com.monsters.generationcodingadmin.modules.admin.entity.Role;
+import com.monsters.generationcodingadmin.common.service.impl.BaseServiceImpl;
+import com.monsters.generationcodingadmin.modules.admin.entity.*;
+import com.monsters.generationcodingadmin.modules.admin.entity.QAdminRoleRelation;
+import com.monsters.generationcodingadmin.modules.admin.entity.QRoleResourceRelation;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.AdminRegisterDTO;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.UpdateAdminPasswordDTO;
 import com.monsters.generationcodingadmin.modules.admin.repository.AdminInfoRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminCacheService;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminService;
 import com.monsters.generationcodingadmin.security.util.JwtTokenUtil;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,13 +25,17 @@ import java.util.List;
  * @date 2022/9/14 5:43 PM
  */
 @Service
-public class AdminServiceImpl implements AdminService {
+public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository> implements AdminService {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    QRoleResourceRelation qRoleResourceRelation = QRoleResourceRelation.roleResourceRelation;
+
+    QAdminRoleRelation qAdminRoleRelation = QAdminRoleRelation.adminRoleRelation;
 
 
     @Override
@@ -113,6 +119,22 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminCacheService getCacheService() {
+        return null;
+    }
+
+    @Override
+    public List<Long> getAdminIdList(Long resourceId) {
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder.and(qRoleResourceRelation.roleId.eq(qAdminRoleRelation.roleId))
+                .and(qRoleResourceRelation.resourceId.eq(resourceId));
+
+        this.queryFactory
+                .from(qRoleResourceRelation, qAdminRoleRelation)
+                .select(qAdminRoleRelation.adminId)
+                .where(booleanBuilder)
+                .fetch();
+
         return null;
     }
 }

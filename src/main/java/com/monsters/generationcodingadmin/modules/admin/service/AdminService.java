@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.modules.admin.service;
 
+import com.monsters.generationcodingadmin.common.service.BaseService;
 import com.monsters.generationcodingadmin.modules.admin.entity.Admin;
 import com.monsters.generationcodingadmin.modules.admin.entity.Resource;
 import com.monsters.generationcodingadmin.modules.admin.entity.Role;
@@ -13,10 +14,11 @@ import java.util.List;
 
 /**
  * 后台管理员 service
+ *
  * @author Monsters
  * @date 2022/9/14 5:42 PM
  */
-public interface AdminService {
+public interface AdminService extends BaseService<Admin> {
 
     /**
      * 根据名称查询管理员
@@ -31,7 +33,7 @@ public interface AdminService {
     /**
      * 登陆
      */
-    String login(String username,String password);
+    String login(String username, String password);
 
     /**
      * 刷新token的功能
@@ -90,4 +92,8 @@ public interface AdminService {
     AdminCacheService getCacheService();
 
 
+    /**
+     * 获取资源相关用户ID列表
+     */
+    List<Long> getAdminIdList(Long resourceId);
 }

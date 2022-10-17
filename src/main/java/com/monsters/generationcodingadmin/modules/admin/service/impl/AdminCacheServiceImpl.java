@@ -1,7 +1,9 @@
 package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.monsters.generationcodingadmin.common.service.RedisService;
 import com.monsters.generationcodingadmin.modules.admin.entity.Admin;
+import com.monsters.generationcodingadmin.modules.admin.entity.AdminRoleRelation;
 import com.monsters.generationcodingadmin.modules.admin.entity.Resource;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminCacheService;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminRoleRelationService;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Monsters
@@ -57,38 +60,55 @@ public class AdminCacheServiceImpl implements AdminCacheService {
 
     @Override
     public void delResourceListByRole(Long roleId) {
-        //TODO
+        List<AdminRoleRelation> relationList = adminRoleRelationService.list(roleId);
+        if (CollUtil.isNotEmpty(relationList)) {
+            String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
+            List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
+            redisService.del(keys);
+        }
     }
 
     @Override
     public void delResourceListByRoleIds(List<Long> roleIds) {
-        //TODO
+        List<AdminRoleRelation> relationList = adminRoleRelationService.list(roleIds);
+        if (CollUtil.isNotEmpty(relationList)) {
+            String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
+            List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
+            redisService.del(keys);
+        }
     }
 
     @Override
     public void delResourceListByResource(Long resourceId) {
-        //TODO
+        List<Long> adminIdList = adminService.getAdminIdList(resourceId);
+        if (CollUtil.isNotEmpty(adminIdList)) {
+            String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
+            List<String> keys = adminIdList.stream().map(adminId -> keyPrefix + adminId).collect(Collectors.toList());
+            redisService.del(keys);
+        }
     }
 
     @Override
     public Admin getAdmin(String username) {
-        //TODO
-        return null;
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + username;
+        return (Admin) redisService.get(key);
     }
 
     @Override
     public void setAdmin(Admin admin) {
-        //TODO
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + admin.getUsername();
+        redisService.set(key, admin, REDIS_EXPIRE);
     }
 
     @Override
     public List<Resource> getResourceList(Long adminId) {
-        //TODO
-        return null;
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + adminId;
+        return (List<Resource>) redisService.get(key);
     }
 
     @Override
     public void setResourceList(Long adminId, List<Resource> resourceList) {
-        //TODO
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + adminId;
+        redisService.set(key, resourceList, REDIS_EXPIRE);
     }
 }
