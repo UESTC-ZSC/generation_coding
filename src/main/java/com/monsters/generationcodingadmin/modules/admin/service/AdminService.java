@@ -81,10 +81,6 @@ public interface AdminService extends BaseService<Admin> {
      */
     UserDetails loadUserByUsername(String username);
 
-    /**
-     * 通过 id 获取用户
-     */
-    Admin getById(Long adminId);
 
     /**
      * 获取缓存服务
