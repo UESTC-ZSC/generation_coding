@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.modules.admin.service;
 
+import com.monsters.generationcodingadmin.common.service.BaseService;
 import com.monsters.generationcodingadmin.modules.admin.entity.Resource;
 import org.springframework.data.domain.Page;
 
@@ -7,10 +8,11 @@ import java.util.List;
 
 /**
  * 后台资源管理Service
+ *
  * @author Monsters
  * @date 2022/10/9 11:32 PM
  */
-public interface ResourceService {
+public interface ResourceService extends BaseService<Resource> {
     /**
      * 添加资源
      */
@@ -32,4 +34,9 @@ public interface ResourceService {
     Page<Resource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum);
 
     List<Resource> list();
+
+    /**
+     * 获取用户所有可访问资源
+     */
+    List<Resource> getResourceList(Long adminId);
 }

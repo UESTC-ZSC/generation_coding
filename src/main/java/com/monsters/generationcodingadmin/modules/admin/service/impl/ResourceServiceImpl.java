@@ -1,7 +1,14 @@
 package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
-import com.monsters.generationcodingadmin.modules.admin.entity.Resource;
+import com.monsters.generationcodingadmin.common.service.impl.BaseServiceImpl;
+import com.monsters.generationcodingadmin.modules.admin.entity.*;
+import com.monsters.generationcodingadmin.modules.admin.entity.QAdminRoleRelation;
+import com.monsters.generationcodingadmin.modules.admin.entity.QResource;
+import com.monsters.generationcodingadmin.modules.admin.entity.QRole;
+import com.monsters.generationcodingadmin.modules.admin.entity.QRoleResourceRelation;
+import com.monsters.generationcodingadmin.modules.admin.repository.ResourceInfoRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.ResourceService;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +20,15 @@ import java.util.List;
  * @date 2022/10/9 11:32 PM
  */
 @Service
-public class ResourceServiceImpl implements ResourceService {
+public class ResourceServiceImpl extends BaseServiceImpl<Resource, ResourceInfoRepository> implements ResourceService {
+
+    QRole qRole = QRole.role;
+
+    QResource qResource = QResource.resource;
+
+    QAdminRoleRelation qAdminRoleRelation = QAdminRoleRelation.adminRoleRelation;
+
+    QRoleResourceRelation qRoleResourceRelation = QRoleResourceRelation.roleResourceRelation;
 
     @Override
     public boolean create(Resource umsResource) {
@@ -50,5 +65,21 @@ public class ResourceServiceImpl implements ResourceService {
         List<Resource> list = new ArrayList<>();
         list.add(resource);
         return list;
+    }
+
+    @Override
+    public List<Resource> getResourceList(Long adminId) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        booleanBuilder
+                .and(qAdminRoleRelation.roleId.eq(qRole.id))
+                .and(qRoleResourceRelation.roleId.eq(qRole.id))
+                .and(qRoleResourceRelation.resourceId.eq(qResource.id))
+                .and(qAdminRoleRelation.adminId.eq(adminId))
+                .and(qResource.id.isNotNull());
+        return this.queryFactory
+                .from(qResource, qAdminRoleRelation, qRoleResourceRelation, qRole)
+                .select(qResource)
+                .where(booleanBuilder)
+                .groupBy(qResource.id).fetch();
     }
 }

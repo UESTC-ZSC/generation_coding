@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.monsters.generationcodingadmin.common.exception.Asserts;
 import com.monsters.generationcodingadmin.common.service.impl.BaseServiceImpl;
 import com.monsters.generationcodingadmin.domain.AdminUserDetails;
@@ -13,6 +14,7 @@ import com.monsters.generationcodingadmin.modules.admin.repository.AdminInfoRepo
 import com.monsters.generationcodingadmin.modules.admin.repository.LoginLogRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminCacheService;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminService;
+import com.monsters.generationcodingadmin.modules.admin.service.ResourceService;
 import com.monsters.generationcodingadmin.security.util.JwtTokenUtil;
 import com.monsters.generationcodingadmin.security.util.SpringUtil;
 import com.querydsl.core.BooleanBuilder;
@@ -52,6 +54,9 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Autowired
     private LoginLogRepository loginLogRepository;
+
+    @Autowired
+    private ResourceService resourceService;
 
     QRoleResourceRelation qRoleResourceRelation = QRoleResourceRelation.roleResourceRelation;
 
@@ -155,8 +160,15 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Override
     public List<Resource> getResourceList(Long adminId) {
-        //TODO
-        return null;
+        List<Resource> resourceList = getCacheService().getResourceList(adminId);
+        if (CollUtil.isNotEmpty(resourceList)) {
+            return resourceList;
+        }
+        resourceList = this.resourceService.getResourceList(adminId);
+        if (CollUtil.isNotEmpty(resourceList)) {
+            getCacheService().setResourceList(adminId, resourceList);
+        }
+        return resourceList;
     }
 
     @Override
@@ -210,7 +222,6 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
         }
         AdminLoginLog loginLog = new AdminLoginLog();
         loginLog.setAdminId(admin.getId());
-        loginLog.setCreateTime(LocalDateTime.now());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         loginLog.setIp(request.getRemoteAddr());
