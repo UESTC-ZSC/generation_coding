@@ -5,6 +5,7 @@ import com.monsters.generationcodingadmin.modules.admin.entity.AdminRoleRelation
 import com.monsters.generationcodingadmin.modules.admin.entity.QAdminRoleRelation;
 import com.monsters.generationcodingadmin.modules.admin.repository.AdminRoleRelationRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminRoleRelationService;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,12 @@ public class AdminRoleRelationServiceImpl extends BaseServiceImpl<AdminRoleRelat
                 .select(qAdminRoleRelation)
                 .where(predicate)
                 .fetch();
+    }
+
+    @Override
+    public void move(Long adminId) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qAdminRoleRelation.adminId.eq(adminId));
+        this.queryFactory.delete(qAdminRoleRelation).where(builder);
     }
 }

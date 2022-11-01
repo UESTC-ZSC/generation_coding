@@ -47,15 +47,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> i
 
     @Override
     public Page<Menu> list(MenuPageDTO pageDTO) {
-
-//        Predicate predicate = null;
-//        if(pageDTO.getParentId() != null){
-//            predicate = qMenu.parentId.eq(pageDTO.getParentId());
-//
-//        return this.repository.findAll(predicate, request);
-
         PageRequest request = PageRequest.of(pageDTO.getPageNum() - 1, pageDTO.getPageSize());
-
         BooleanBuilder builder = new BooleanBuilder();
         JPAQuery<Menu> jpaQuery = queryFactory.select(qMenu).from(qMenu);
         QueryResults<Menu> queryResults = jpaQuery.where(builder)

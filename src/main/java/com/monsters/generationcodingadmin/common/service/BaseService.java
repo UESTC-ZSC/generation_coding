@@ -34,6 +34,11 @@ public interface BaseService<T> {
     T insert(T entity);
 
     /**
+     * 批量插入
+     */
+    void saveBatch(Iterable<T> entities);
+
+    /**
      * 更新实体
      */
     T update(T entity);

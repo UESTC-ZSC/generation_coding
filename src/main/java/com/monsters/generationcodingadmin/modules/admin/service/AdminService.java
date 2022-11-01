@@ -48,7 +48,7 @@ public interface AdminService extends BaseService<Admin> {
     /**
      * 更新用户
      */
-    boolean update(Long id, Admin admin);
+    Admin update(Admin admin);
 
     /**
      * 删除用户

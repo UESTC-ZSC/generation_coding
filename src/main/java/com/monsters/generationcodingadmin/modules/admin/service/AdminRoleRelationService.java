@@ -11,7 +11,10 @@ import java.util.List;
  * @date 2022/10/10 5:02 PM
  */
 public interface AdminRoleRelationService extends BaseService<AdminRoleRelation> {
+
     List<AdminRoleRelation> list(Long roleId);
+
     List<AdminRoleRelation> list(List<Long> roleIds);
 
+    void move(Long adminId);
 }

@@ -1,6 +1,7 @@
 package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.monsters.generationcodingadmin.common.exception.Asserts;
 import com.monsters.generationcodingadmin.common.service.impl.BaseServiceImpl;
 import com.monsters.generationcodingadmin.domain.AdminUserDetails;
@@ -13,16 +14,21 @@ import com.monsters.generationcodingadmin.modules.admin.model.dto.UpdateAdminPas
 import com.monsters.generationcodingadmin.modules.admin.repository.AdminInfoRepository;
 import com.monsters.generationcodingadmin.modules.admin.repository.LoginLogRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminCacheService;
+import com.monsters.generationcodingadmin.modules.admin.service.AdminRoleRelationService;
 import com.monsters.generationcodingadmin.modules.admin.service.AdminService;
 import com.monsters.generationcodingadmin.modules.admin.service.ResourceService;
 import com.monsters.generationcodingadmin.security.util.JwtTokenUtil;
 import com.monsters.generationcodingadmin.security.util.SpringUtil;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,11 +36,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,6 +65,9 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Autowired
     private ResourceService resourceService;
+
+    @Autowired
+    private AdminRoleRelationService adminRoleRelationService;
 
     QRoleResourceRelation qRoleResourceRelation = QRoleResourceRelation.roleResourceRelation;
 
@@ -122,20 +133,33 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Override
     public String refreshToken(String oldToken) {
-//        TODO
-        return null;
+        return jwtTokenUtil.refreshHeadToken(oldToken);
     }
 
     @Override
     public Page<Admin> list(String keyword, Integer pageSize, Integer pageNum) {
-//        TODO
-        return null;
+        PageRequest request = PageRequest.of(pageNum - 1, pageSize);
+        BooleanBuilder builder = new BooleanBuilder();
+        JPAQuery<Admin> jpaQuery = queryFactory.select(qAdmin).from(qAdmin);
+        QueryResults<Admin> queryResults = jpaQuery.where(builder)
+                .orderBy(qAdmin.id.desc())
+                .offset(request.getOffset())
+                .limit(request.getPageSize())
+                .fetchResults();
+        return new PageImpl<>(queryResults.getResults(), request, queryResults.getTotal());
     }
 
+
     @Override
-    public boolean update(Long id, Admin admin) {
-        //TODO
-        return false;
+    public Admin update(Admin entity) {
+        Admin oldAdmin = this.getById(entity.getId());
+        // 修改密码需要加密
+        if (!oldAdmin.getPassword().equals(entity.getPassword())) {
+            entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        }
+        Admin result = super.update(entity);
+        getCacheService().delAdmin(entity.getId());
+        return result;
     }
 
     @Override
@@ -148,8 +172,22 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Override
     public int updateRole(Long adminId, List<Long> roleIds) {
-//        TODO
-        return 0;
+        int count = roleIds == null ? 0 : roleIds.size();
+        //先删除原来的关系
+        adminRoleRelationService.move(adminId);
+        //建立新关系
+        if (!CollectionUtils.isEmpty(roleIds)) {
+            List<AdminRoleRelation> relationList = new ArrayList<>();
+            for (Long roleId : roleIds) {
+                AdminRoleRelation roleRelation = new AdminRoleRelation();
+                roleRelation.setAdminId(adminId);
+                roleRelation.setRoleId(roleId);
+                relationList.add(roleRelation);
+            }
+            adminRoleRelationService.saveBatch(relationList);
+            getCacheService().delResourceList(adminId);
+        }
+        return count;
     }
 
     @Override

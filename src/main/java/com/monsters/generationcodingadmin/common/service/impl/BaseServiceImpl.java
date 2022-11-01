@@ -54,5 +54,10 @@ public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements Bas
         return this.repository.save(entity);
     }
 
+    @Override
+    public void saveBatch(Iterable<T> entities) {
+        this.repository.saveAll(entities);
+    }
+
 
 }
