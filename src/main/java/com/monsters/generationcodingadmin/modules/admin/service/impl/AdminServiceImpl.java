@@ -8,6 +8,7 @@ import com.monsters.generationcodingadmin.domain.AdminUserDetails;
 import com.monsters.generationcodingadmin.modules.admin.entity.*;
 import com.monsters.generationcodingadmin.modules.admin.entity.QAdmin;
 import com.monsters.generationcodingadmin.modules.admin.entity.QAdminRoleRelation;
+import com.monsters.generationcodingadmin.modules.admin.entity.QRole;
 import com.monsters.generationcodingadmin.modules.admin.entity.QRoleResourceRelation;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.AdminRegisterDTO;
 import com.monsters.generationcodingadmin.modules.admin.model.dto.UpdateAdminPasswordDTO;
@@ -74,6 +75,7 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
     QAdminRoleRelation qAdminRoleRelation = QAdminRoleRelation.adminRoleRelation;
 
     QAdmin qAdmin = QAdmin.admin;
+    QRole qRole = QRole.role;
 
     @Override
     public Admin getAdminByUsername(String username) {
@@ -192,8 +194,14 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Override
     public List<Role> getRoleList(Long adminId) {
-        //TODO
-        return null;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qAdminRoleRelation.adminId.eq(qRole.id))
+                .and(qAdminRoleRelation.adminId.eq(adminId));
+        return this.queryFactory
+                .select(qRole)
+                .from(qRole, qAdminRoleRelation)
+                .where(builder)
+                .fetch();
     }
 
     @Override
@@ -210,9 +218,25 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
     }
 
     @Override
-    public int updatePassword(UpdateAdminPasswordDTO updatePasswordParam) {
+    public int updatePassword(UpdateAdminPasswordDTO param) {
         //TODO
-        return 0;
+        if (StrUtil.isEmpty(param.getUsername())
+                || StrUtil.isEmpty(param.getOldPassword())
+                || StrUtil.isEmpty(param.getNewPassword())) {
+            return -1;
+        }
+        List<Admin> adminList = this.queryFactory.select(qAdmin).from(qAdmin).where(qAdmin.username.eq(param.getUsername())).fetch();
+        if(CollUtil.isEmpty(adminList)){
+            return -2;
+        }
+        Admin admin = adminList.get(0);
+        if(!passwordEncoder.matches(param.getOldPassword(),admin.getPassword())){
+            return -3;
+        }
+        admin.setPassword(passwordEncoder.encode(param.getNewPassword()));
+        update(admin);
+        getCacheService().delAdmin(admin.getId());
+        return 1;
     }
 
     @Override
@@ -233,18 +257,16 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Override
     public List<Long> getAdminIdList(Long resourceId) {
-
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-        booleanBuilder.and(qRoleResourceRelation.roleId.eq(qAdminRoleRelation.roleId))
+        booleanBuilder
+                .and(qRoleResourceRelation.roleId.eq(qAdminRoleRelation.roleId))
                 .and(qRoleResourceRelation.resourceId.eq(resourceId));
 
-        this.queryFactory
+        return this.queryFactory
                 .from(qRoleResourceRelation, qAdminRoleRelation)
                 .select(qAdminRoleRelation.adminId)
                 .where(booleanBuilder)
                 .fetch();
-
-        return null;
     }
 
 
