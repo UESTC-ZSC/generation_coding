@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.monsters.generationcodingadmin.common.service.impl.BaseServiceImpl;
 import com.monsters.generationcodingadmin.modules.admin.entity.*;
 import com.monsters.generationcodingadmin.modules.admin.entity.QAdminRoleRelation;
@@ -9,7 +10,11 @@ import com.monsters.generationcodingadmin.modules.admin.entity.QRoleResourceRela
 import com.monsters.generationcodingadmin.modules.admin.repository.ResourceInfoRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.ResourceService;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,42 +35,30 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, ResourceInfoR
 
     QRoleResourceRelation qRoleResourceRelation = QRoleResourceRelation.roleResourceRelation;
 
-    @Override
-    public boolean create(Resource umsResource) {
-        //TODO
-        return false;
-    }
+
 
     @Override
-    public boolean update(Long id, Resource umsResource) {
-        //TODO
-        return false;
+    public Page<Resource> list(Long id, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum) {
+        PageRequest request = PageRequest.of(pageNum - 1, pageSize);
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        if (id != null){
+            booleanBuilder.and(qResource.id.eq(id));
+        }
+        if (StrUtil.isNotEmpty(nameKeyword)){
+            booleanBuilder.and(qResource.name.like(nameKeyword));
+        }
+        if (StrUtil.isNotEmpty(urlKeyword)){
+            booleanBuilder.and(qResource.url.like(urlKeyword));
+        }
+        JPAQuery<Resource> jpaQuery = queryFactory.select(qResource).from(qResource);
+        QueryResults<Resource> queryResults = jpaQuery.where(booleanBuilder)
+                .orderBy(qResource.id.desc())
+                .offset(request.getOffset())
+                .limit(request.getPageSize())
+                .fetchResults();
+        return new PageImpl<>(queryResults.getResults(),request, queryResults.getTotal());
     }
 
-    @Override
-    public boolean delete(Long id) {
-        //TODO
-        return false;
-    }
-
-    @Override
-    public Page<Resource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum) {
-        //TODO
-        return null;
-    }
-
-    @Override
-    public List<Resource> list() {
-        //TODO
-        Resource resource = new Resource();
-        resource.setName("菜单");
-        resource.setUrl("/menu");
-        resource.setDescription("菜单");
-        resource.setCategoryId(1L);
-        List<Resource> list = new ArrayList<>();
-        list.add(resource);
-        return list;
-    }
 
     @Override
     public List<Resource> getResourceList(Long adminId) {

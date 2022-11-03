@@ -16,24 +16,19 @@ public interface ResourceService extends BaseService<Resource> {
     /**
      * 添加资源
      */
-    boolean create(Resource umsResource);
+    Resource insert(Resource resource);
 
     /**
      * 修改资源
      */
-    boolean update(Long id, Resource umsResource);
+    Resource update(Resource umsResource);
 
-    /**
-     * 删除资源
-     */
-    boolean delete(Long id);
 
     /**
      * 分页查询资源
      */
-    Page<Resource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum);
+    Page<Resource> list(Long id, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum);
 
-    List<Resource> list();
 
     /**
      * 获取用户所有可访问资源

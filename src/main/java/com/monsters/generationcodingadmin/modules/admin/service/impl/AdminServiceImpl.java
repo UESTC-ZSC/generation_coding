@@ -142,6 +142,10 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
     public Page<Admin> list(String keyword, Integer pageSize, Integer pageNum) {
         PageRequest request = PageRequest.of(pageNum - 1, pageSize);
         BooleanBuilder builder = new BooleanBuilder();
+        if (StrUtil.isNotEmpty(keyword)){
+            builder.and(qAdmin.username.like(keyword))
+                    .or(qAdmin.nickName.like(keyword));
+        }
         JPAQuery<Admin> jpaQuery = queryFactory.select(qAdmin).from(qAdmin);
         QueryResults<Admin> queryResults = jpaQuery.where(builder)
                 .orderBy(qAdmin.id.desc())
@@ -219,7 +223,6 @@ public class AdminServiceImpl extends BaseServiceImpl<Admin, AdminInfoRepository
 
     @Override
     public int updatePassword(UpdateAdminPasswordDTO param) {
-        //TODO
         if (StrUtil.isEmpty(param.getUsername())
                 || StrUtil.isEmpty(param.getOldPassword())
                 || StrUtil.isEmpty(param.getNewPassword())) {
