@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.modules.admin.service;
 
+import com.monsters.generationcodingadmin.common.service.BaseService;
 import com.monsters.generationcodingadmin.modules.admin.entity.ResourceAllocation;
 
 import java.util.List;
@@ -9,15 +10,15 @@ import java.util.List;
  * @author Monsters
  * @date 2022/10/10 5:53 PM
  */
-public interface ResourceAllocationService {
+public interface ResourceAllocationService extends BaseService<ResourceAllocation> {
 
     /**
      * 获取所有资源分类
      */
-    List<ResourceAllocation> listAll();
+    List<ResourceAllocation> findAll();
 
     /**
      * 创建资源分类
      */
-    boolean create(ResourceAllocation umsResourceCategory);
+    ResourceAllocation insert(ResourceAllocation resourceAllocation);
 }

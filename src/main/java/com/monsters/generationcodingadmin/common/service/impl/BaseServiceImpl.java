@@ -30,7 +30,7 @@ public class BaseServiceImpl<T, K extends JpaRepository<T, Long>> implements Bas
     protected EntityManager em;
 
     @Override
-    public List findAll() {
+    public List<T> findAll() {
         return this.repository.findAll();
     }
 
