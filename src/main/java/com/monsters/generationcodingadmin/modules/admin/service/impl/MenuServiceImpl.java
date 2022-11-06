@@ -95,7 +95,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> i
     }
 
     /**
-     * 将UmsMenu转化为UmsMenuNode并设置children属性
+     * 将Menu转化为MenuNode并设置children属性
      */
     private MenuNode covertMenuNode(Menu menu, List<Menu> menuList) {
         MenuNode node = new MenuNode();

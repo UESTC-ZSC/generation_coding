@@ -29,6 +29,11 @@ public interface BaseService<T> {
     void deleteById(Long id);
 
     /**
+     * 批量删除
+     */
+    void delete(List<Long> ids);
+
+    /**
      * 插入实体
      */
     T insert(T entity);

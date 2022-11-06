@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.modules.admin.service;
 
+import com.monsters.generationcodingadmin.common.service.BaseService;
 import com.monsters.generationcodingadmin.modules.admin.entity.Menu;
 import com.monsters.generationcodingadmin.modules.admin.entity.Resource;
 import com.monsters.generationcodingadmin.modules.admin.entity.Role;
@@ -12,17 +13,17 @@ import java.util.List;
  * @author Monsters
  * @date 2022/10/10 9:59 PM
  */
-public interface RoleService {
+public interface RoleService extends BaseService<Role> {
 
     /**
      * 添加角色
      */
-    boolean create(Role role);
+    Role insert(Role role);
 
     /**
      * 批量删除角色
      */
-    boolean delete(List<Long> ids);
+    void delete(List<Long> ids);
 
     /**
      * 分页获取角色列表

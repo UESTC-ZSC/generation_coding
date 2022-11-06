@@ -38,7 +38,7 @@ public class SystemSecurityConfig {
             @Override
             public Map<String, ConfigAttribute> loadDataSource() {
                 Map<String, ConfigAttribute> map = new ConcurrentHashMap<>();
-                List<Resource> resourceList = resourceService.list();
+                List<Resource> resourceList = resourceService.findAll();
                 for (Resource resource : resourceList) {
                     map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
                 }
