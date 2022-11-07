@@ -10,14 +10,18 @@ import com.monsters.generationcodingadmin.modules.admin.entity.QRole;
 import com.monsters.generationcodingadmin.modules.admin.entity.QRoleMenuRelation;
 import com.monsters.generationcodingadmin.modules.admin.entity.QRoleResourceRelation;
 import com.monsters.generationcodingadmin.modules.admin.repository.RoleInfoRepository;
+import com.monsters.generationcodingadmin.modules.admin.service.RoleMenuRelationService;
+import com.monsters.generationcodingadmin.modules.admin.service.RoleResourceRelationService;
 import com.monsters.generationcodingadmin.modules.admin.service.RoleService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +42,12 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, RoleInfoRepository> i
     QResource qResource = QResource.resource;
 
     QRoleResourceRelation qRoleResourceRelation = QRoleResourceRelation.roleResourceRelation;
+
+    @Autowired
+    RoleMenuRelationService roleMenuRelationService;
+
+    @Autowired
+    RoleResourceRelationService roleResourceRelationService;
 
     @Override
     public Page<Role> list(String keyword, Integer pageSize, Integer pageNum) {
@@ -104,13 +114,33 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, RoleInfoRepository> i
 
     @Override
     public int allocMenu(Long roleId, List<Long> menuIds) {
-        //TODO
-        return 0;
+        // 先删除原有的关系
+        roleMenuRelationService.remove(roleId);
+        // 再批量插入新的关系
+        List<RoleMenuRelation> relationList = new ArrayList<>();
+        for (Long menuId : menuIds) {
+            RoleMenuRelation relation = new RoleMenuRelation();
+            relation.setRoleId(roleId);
+            relation.setMenuId(menuId);
+            relationList.add(relation);
+        }
+        this.roleMenuRelationService.saveBatch(relationList);
+        return menuIds.size();
     }
 
     @Override
     public int allocResource(Long roleId, List<Long> resourceIds) {
-        //TODO
-        return 0;
+        // 先删除原有的关系
+        roleResourceRelationService.remove(roleId);
+        // 再插入新的关系
+        List<RoleResourceRelation> relationList = new ArrayList<>();
+        for (Long resourceId : resourceIds) {
+            RoleResourceRelation relation = new RoleResourceRelation();
+            relation.setRoleId(roleId);
+            relation.setResourceId(resourceId);
+            relationList.add(relation);
+        }
+        this.roleResourceRelationService.saveBatch(relationList);
+        return resourceIds.size();
     }
 }

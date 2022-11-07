@@ -9,4 +9,9 @@ import com.monsters.generationcodingadmin.modules.admin.entity.RoleMenuRelation;
  * @date 2022/10/10 9:55 PM
  */
 public interface RoleMenuRelationService extends BaseService<RoleMenuRelation> {
+
+    /**
+     * 删除原有的角色菜单关系
+     */
+    void remove(Long roleId);
 }

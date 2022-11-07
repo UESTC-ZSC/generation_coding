@@ -1,9 +1,11 @@
 package com.monsters.generationcodingadmin.modules.admin.service.impl;
 
 import com.monsters.generationcodingadmin.common.service.impl.BaseServiceImpl;
+import com.monsters.generationcodingadmin.modules.admin.entity.QRoleResourceRelation;
 import com.monsters.generationcodingadmin.modules.admin.entity.RoleResourceRelation;
 import com.monsters.generationcodingadmin.modules.admin.repository.RoleResourceRelationInfoRepository;
 import com.monsters.generationcodingadmin.modules.admin.service.RoleResourceRelationService;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,4 +14,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RoleResourceRelationServiceImpl extends BaseServiceImpl<RoleResourceRelation, RoleResourceRelationInfoRepository> implements RoleResourceRelationService {
+
+    QRoleResourceRelation qRoleResourceRelation = QRoleResourceRelation.roleResourceRelation;
+
+
+    @Override
+    public void remove(Long roleId) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qRoleResourceRelation.resourceId.eq(roleId));
+        this.queryFactory.delete(qRoleResourceRelation).where(builder).execute();
+    }
 }

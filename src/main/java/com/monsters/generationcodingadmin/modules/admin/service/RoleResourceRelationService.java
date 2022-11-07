@@ -10,4 +10,9 @@ import com.monsters.generationcodingadmin.modules.admin.entity.RoleResourceRelat
  * @date 2022/10/10 9:55 PM
  */
 public interface RoleResourceRelationService extends BaseService<RoleResourceRelation> {
+
+    /**
+     * 删除角色资源关系
+     */
+    void remove(Long roleId);
 }
