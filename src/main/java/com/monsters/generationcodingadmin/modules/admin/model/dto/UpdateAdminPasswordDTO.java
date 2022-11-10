@@ -11,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
  */
 @Data
 public class UpdateAdminPasswordDTO {
+
     @NotEmpty
     @ApiModelProperty(value = "用户名", required = true)
     private String username;

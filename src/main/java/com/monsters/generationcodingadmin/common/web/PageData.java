@@ -23,6 +23,9 @@ public class PageData<T> {
 
     private List<T> data;
 
+    /**
+     * 将 page 转换为前端 PageData 对象
+     */
     public static <T> PageData convertPageData(Page<T> page){
         PageData<T> pageData = new PageData<>();
         pageData.setCurrent(page.getNumber() + 1);
