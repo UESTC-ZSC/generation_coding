@@ -53,3 +53,12 @@ secure:
       - /admin/info
       - /admin/logout
 
+
+#swagger
+springfox:
+  documentation:
+    swagger-ui:
+      enabled: true
+knife4j:
+  enable: true
+

@@ -1,5 +1,6 @@
 package com.monsters.generationcodingadmin.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.monsters.generationcodingadmin.common.config.BaseSwaggerConfig;
 import com.monsters.generationcodingadmin.common.domain.SwaggerProperties;
 import org.springframework.beans.BeansException;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
+import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
 import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  */
 @Configuration
 @EnableSwagger2
+@EnableOpenApi
+@EnableKnife4j
 public class SwaggerConfig extends BaseSwaggerConfig {
 
     @Override
