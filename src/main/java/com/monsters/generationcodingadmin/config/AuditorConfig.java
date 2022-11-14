@@ -16,6 +16,7 @@ public class AuditorConfig implements AuditorAware<String> {
     /** 获取当前登陆人 */
     @Override
     public Optional<String> getCurrentAuditor() {
+        //TODO 换成当前登陆人
         return Optional.of("admin");
     }
 }
