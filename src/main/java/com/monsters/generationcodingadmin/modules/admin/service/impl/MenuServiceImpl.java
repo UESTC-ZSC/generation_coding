@@ -49,6 +49,7 @@ public class MenuServiceImpl extends BaseServiceImpl<Menu, MenuInfoRepository> i
     public Page<Menu> list(MenuPageDTO pageDTO) {
         PageRequest request = PageRequest.of(pageDTO.getPageNum() - 1, pageDTO.getPageSize());
         BooleanBuilder builder = new BooleanBuilder();
+        builder.equals(qMenu.parentId.eq(pageDTO.getParentId()));
         JPAQuery<Menu> jpaQuery = queryFactory.select(qMenu).from(qMenu);
         QueryResults<Menu> queryResults = jpaQuery.where(builder)
                 .orderBy(qMenu.sort.desc())

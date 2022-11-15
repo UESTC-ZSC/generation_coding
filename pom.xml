@@ -30,6 +30,7 @@
 		<querydsl.version>5.0.0</querydsl.version>
 		<org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
 		<spotless.version>2.25.0</spotless.version>
+		<fastjson.version>2.0.11</fastjson.version>
 	</properties>
 	<dependencies>
 		<!--SpringBoot 通用模块依赖-->
@@ -178,6 +179,13 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+
+		<!--		fastjson-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
 		</dependency>
 
 
