@@ -18,8 +18,7 @@ import java.util.List;
  * @date 2022/11/15 3:31 PM
  */
 @RestController
-@Api(tags = "ResourceCategoryController")
-@Tag(name = "ResourceCategoryController", description = "后台资源分类管理")
+@Api(tags = "资源分类管理接口")
 @RequestMapping("/resourceAllocation")
 public class ResourceAllocationController {
 

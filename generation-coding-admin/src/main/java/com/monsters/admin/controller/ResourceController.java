@@ -21,8 +21,7 @@ import java.util.List;
  * @date 2022/11/15 3:54 PM
  */
 @RestController
-@Api(tags = "ResourceController")
-@Tag(name = "ResourceController", description = "后台资源管理")
+@Api(tags = "资源管理接口")
 @RequestMapping("/resource")
 public class ResourceController {
 

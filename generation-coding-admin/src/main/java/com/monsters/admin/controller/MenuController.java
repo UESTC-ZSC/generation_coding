@@ -20,8 +20,7 @@ import java.util.List;
  * @date 2022/10/11 10:53 AM
  */
 @RestController
-@Api(tags = "MenuController")
-@Tag(name = "MenuController",description = "后台菜单管理")
+@Api(tags = "菜单管理接口")
 @RequestMapping("/api/menu")
 public class MenuController {
 

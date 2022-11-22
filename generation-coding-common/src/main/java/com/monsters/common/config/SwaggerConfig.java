@@ -30,7 +30,7 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     @Override
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
-                .apiBasePackage("com.monsters.generationcodingadmin.modules")
+                .apiBasePackage("com.monsters")
                 .title("generation-coding-admin项目骨架")
                 .description("generation-coding-admin项目骨架相关接口文档")
                 .contactName("monsters")

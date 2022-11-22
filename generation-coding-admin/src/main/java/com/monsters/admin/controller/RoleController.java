@@ -20,8 +20,7 @@ import java.util.List;
  * @date 2022/11/15 4:07 PM
  */
 @RestController
-@Api(tags = "RoleController")
-@Tag(name = "RoleController", description = "后台用户角色管理")
+@Api(tags = "用户角色管理接口")
 @RequestMapping("/role")
 public class RoleController {
 

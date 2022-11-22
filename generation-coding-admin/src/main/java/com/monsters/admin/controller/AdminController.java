@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
  * @date 2022/10/17 4:31 PM
  */
 @RestController
-@Api(tags = "AdminController")
-@Tag(name = "AdminController", description = "后台用户管理")
+@Api(tags = "用户管理接口")
 @RequestMapping("/api/admin")
 public class AdminController {
 
