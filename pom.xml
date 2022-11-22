@@ -9,10 +9,16 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.monsters</groupId>
-	<artifactId>generation-coding-admin</artifactId>
+	<artifactId>generation-coding</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>generation-coding-admin</name>
-	<description>generation-coding-admin</description>
+	<name>generation-coding</name>
+	<description>generation-coding</description>
+	<packaging>pom</packaging>
+	<modules>
+		<module>generation-coding-common</module>
+		<module>generation-coding-admin</module>
+		<module>generation-coding-core</module>
+	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -189,6 +195,7 @@
 		</dependency>
 
 
+
 	</dependencies>
 
 	<build>
@@ -220,30 +227,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			<!--            mapstruct 配置-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<source>11</source> <!-- depending on your project -->
-					<target>11</target> <!-- depending on your project -->
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${org.mapstruct.version}</version>
-						</path>
-						<!-- other annotation processors -->
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>1.18.14</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 
