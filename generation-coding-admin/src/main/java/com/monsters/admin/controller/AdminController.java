@@ -65,14 +65,12 @@ public class AdminController {
             return ResultData.validateFailed("用户名或密码错误");
         }
         Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("token", token);
-        tokenMap.put("tokenHead", tokenHead);
+        tokenMap.put("token", tokenHead + " " + token);
         return ResultData.getSuccessData(tokenMap);
     }
 
     @ApiOperation(value = "刷新token")
     @RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
-    @ResponseBody
     public ResultData refreshToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String refreshToken = adminService.refreshToken(token);
@@ -80,14 +78,12 @@ public class AdminController {
             return ResultData.getFailResult("token已经过期！");
         }
         Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("token", refreshToken);
-        tokenMap.put("tokenHead", tokenHead);
+        tokenMap.put("token", tokenHead + " " + refreshToken);
         return ResultData.getSuccessData(tokenMap);
     }
 
     @ApiOperation(value = "获取当前登录用户信息")
     @RequestMapping(value = "/getLoginInfo", method = RequestMethod.GET)
-    @ResponseBody
     public ResultData getAdminInfo(Principal principal) {
         if (principal == null) {
             return ResultData.unauthorized(null);
@@ -95,9 +91,13 @@ public class AdminController {
         String username = principal.getName();
         Admin admin = adminService.getAdminByUsername(username);
         Map<String, Object> data = new HashMap<>();
+        data.put("userId", admin.getId());
         data.put("username", admin.getUsername());
+        data.put("realName", admin.getNickName());
         data.put("menus", roleService.getMenuList(admin.getId()));
-        data.put("icon", admin.getIcon());
+        data.put("avatar", admin.getIcon());
+        data.put("desc", admin.getNote());
+        data.put("homePath", "/dashboard/analysis");
         List<Role> roleList = adminService.getRoleList(admin.getId());
         if (CollUtil.isNotEmpty(roleList)) {
             List<String> roles = roleList.stream().map(Role::getName).collect(Collectors.toList());
@@ -113,7 +113,7 @@ public class AdminController {
         return ResultData.getSuccessResult();
     }
 
-    @ApiOperation("根据用户名或姓名分页获取用户列表")
+    @ApiOperation("分页获取用户列表")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public PageData<Admin> list(@RequestParam(value = "keyword", required = false) String keyword,

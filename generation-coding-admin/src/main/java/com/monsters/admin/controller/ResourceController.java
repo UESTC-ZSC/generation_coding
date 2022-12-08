@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @Api(tags = "资源管理接口")
-@RequestMapping("/resource")
+@RequestMapping("/api/resource")
 public class ResourceController {
 
     @Autowired

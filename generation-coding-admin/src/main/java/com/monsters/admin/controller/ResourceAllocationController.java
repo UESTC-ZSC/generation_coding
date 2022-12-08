@@ -19,7 +19,7 @@ import java.util.List;
  */
 @RestController
 @Api(tags = "资源分类管理接口")
-@RequestMapping("/resourceAllocation")
+@RequestMapping("/api/resourceAllocation")
 public class ResourceAllocationController {
 
     @Autowired
